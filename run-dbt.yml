@@ -1,0 +1,28 @@
+name: Run dbt Models
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  dbt-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dbt
+        run: |
+          pip install dbt-core dbt-postgres  # Adjust adapter for your data warehouse
+
+      - name: Run dbt
+        env:
+          DBT_USER: ${{ secrets.DBT_USER }}
+          DBT_PASSWORD: ${{ secrets.DBT_PASSWORD }}
+        run: |
+          dbt run
